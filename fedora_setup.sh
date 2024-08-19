@@ -21,7 +21,13 @@ fi
 # Initial Clean-up
 echo "Performing initial cleanup..."
 sudo dnf autoremove -y firefox libreoffice-core-1:24.2.2.1-3.fc40.x86_64
-sudo dnf autoremove -y gnome-contacts-46.0-1.fc40.x86_64 gnome-weather-46.0-1.fc40.noarch gnome-clocks-46.0-1.fc40.x86_64 gnome-maps-46.0-1.fc40.x86_64 totem-1:43.0-4.fc40.x86_64 rhythmbox-3.4.7-4.fc40.x86_64 gnome-tour-45.0-5.fc40.x86_64
+sudo dnf autoremove -y gnome-contacts gnome-weather gnome-clocks gnome-maps totem rhythmbox gnome-tour simple-scan snapshot yelp gnome-calendar mediawriter
+
+sudo rm -rf /usr/share/gnome-shell/extensions/apps-menu@gnome-shell-extensions.gcampax.github.com
+sudo rm -rf /usr/share/gnome-shell/extensions/background-logo@fedorahosted.org
+sudo rm -rf /usr/share/gnome-shell/extensions/places-menu@gnome-shell-extensions.gcampax.github.com
+sudo rm -rf /usr/share/gnome-shell/extensions/window-list@gnome-shell-extensions.gcampax.github.com
+sudo rm -rf /usr/share/gnome-shell/extensions/launch-new-instance@gnome-shell-extensions.gcampax.github.com
 
 echo "Updating repository cache..."
 sudo dnf update -y
@@ -30,7 +36,7 @@ echo "Installing GNOME utilities..."
 sudo dnf install -y gnome-themes-extra gnome-tweaks timeshift openssl
 
 echo "Installing applications..."
-sudo dnf install -y google-chrome-stable neovim xxd dosbox python3-pip nodejs npm gcc gdb
+sudo dnf install -y google-chrome-stable neovim xxd dosbox python3-pip nodejs npm gcc gdb qbittorrent
 
 # VS Code
 sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
@@ -42,6 +48,10 @@ sudo dnf install -y code
 curl -f https://zed.dev/install.sh | sh
 echo 'export PATH=$HOME/.local/bin:$PATH' >> ~/.zshrc
 
+sudo dnf install postgresql-server postgresql-contrib
+sudo systemctl enable postgresql
+sudo postgresql-setup --initdb --unit postgresql
+
 echo "Installing multimedia codecs and tools..."
 sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
 sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
@@ -51,11 +61,18 @@ sudo dnf group upgrade -y --with-optional Multimedia
 sudo dnf install -y vlc yt-dlp
 
 # Installing Flatpak applications
+echo "Installing Flatpak applications..."
 flatpak install -y com.mattjakeman.ExtensionManager
 flatpak install -y com.discordapp.Discord
 flatpak install -y io.github.ungoogled_software.ungoogled_chromium
 flatpak install -y io.github.ungoogled_software.ungoogled_chromium.Codecs
 flatpak install -y md.obsidian.Obsidian
+flatpak install -y flathub org.localsend.localsend_app
+flatpak install -y io.dbeaver.DBeaverCommunity
+flatpak install -y io.github.amit9838.mousam
+flatpak install -y io.missioncenter.MissionCenter
+flatpak install -y com.rafaelmardojai.Blanket
+sh -c "$(curl -sS https://raw.githubusercontent.com/Vendicated/VencordInstaller/main/install.sh)"
 
 # Installing GNOME Extensions...
 pip3 install --upgrade gnome-extensions-cli
@@ -77,17 +94,58 @@ gext install wallhub@sakithb.github.io
 
 # Applying desktop settings...
 echo "Applying desktop settings..."
-gsettings set org.gnome.desktop.interface font-name 'Inter Variable 11'
+gsettings set org.gnome.desktop.interface font-name 'Inter Display Thin 11'
 gsettings set org.gnome.desktop.sound allow-volume-above-100-percent true
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+gsettings set org.gnome.desktop.interface enable-hot-corners false
+gsettings set org.gnome.desktop.interface show-battery-percentage true
+gsettings set org.gnome.desktop.interface document-font-name "Inter Display Thin 11"
+gsettings set org.gnome.desktop.interface gtk-theme Adwaita-Dark
+gsettings set org.gnome.desktop.wm.preferences button-layout close:appmenu
+gsettings set org.gnome.desktop.sound theme-name freedesktop
+gsettings set org.gnome.desktop.privacy report-technical-problems true
+gsettings set org.gnome.desktop.privacy send-software-usage-stats true
+gsettings set org.gnome.shell.privacy_extensions []
+gsettings set org.gnome.system.location enabled true
+gsettings set org.gnome.shell.extensions.autohide-battery.hide-on 98
+gsettings set org.gnome.shell.extensions.caffeine toggle-shortcut ['<Super>c']
+gsettings set org.gnome.shell.extensions.clipboard-indicator toggle-menu ['<Super>v']
+gsettings set org.gnome.shell.extensions.customize-clock-on-lockscreen remove-date true
+gsettings set org.gnome.shell.extensions.customize-clock-on-lockscreen remove-time true
+gsettings set org.gnome.shell.extensions.customize-clock-on-lockscreen remove-hint true
 sudo plymouth-set-default-theme spinner -R
 git config --global user.name "Benjamin Bergstrom"
 git config --global user.email "benko.dubovecky@gmail.com"
+git config --global init.defaultBranch main
+
+
+echo "Installing Hyfetch..."
+sudo dnf install -y hyfetch
 
 # Installing ZSH...
 echo "Installing ZSH"
 sudo dnf install -y zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+# Setting up ZSH...
+echo "Setting up ZSH..."
+# Define the aliases
+aliases=(
+  'alias ni="npm install"'
+  'alias nd="npm run dev"'
+  'alias ns="npm start"'
+  'alias nb="npm run build"'
+  'alias nu="npm uninstall"'
+  'alias nt="npm run test"'
+  'alias nsd="npm run start:dev"'
+)
+
+# Add each alias to ~/.zshrc if it doesn't already exist
+for alias in "${aliases[@]}"; do
+  if ! grep -q "$alias" ~/.zshrc; then
+    echo "$alias" >> ~/.zshrc
+  fi
+done
 
 # Reboot the computer
 echo "Preparing to reboot the computer..."
