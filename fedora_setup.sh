@@ -51,6 +51,9 @@ echo 'export PATH=$HOME/.local/bin:$PATH' >> ~/.zshrc
 sudo dnf install postgresql-server postgresql-contrib
 sudo systemctl enable postgresql
 sudo postgresql-setup --initdb --unit postgresql
+sudo dnf group install --with-optional virtualization -y
+sudo systemctl start libvirtd
+sudo systemctl enable libvirtd
 
 echo "Installing multimedia codecs and tools..."
 sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
@@ -59,6 +62,16 @@ sudo dnf install -y gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-o
 sudo dnf install -y lame* --exclude=lame-devel
 sudo dnf group upgrade -y --with-optional Multimedia
 sudo dnf install -y vlc yt-dlp
+
+# Installing Docker...
+echo "Installing Docker..."
+sudo dnf remove -y docker docker-client docker-client-latest                  docker-common docker-latest docker-latest-logrotate docker-logrotate docker-selinux docker-engine-selinux docker-engine
+
+sudo dnf -y install dnf-plugins-core
+sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+
+sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo systemctl enable docker
 
 # Installing Flatpak applications
 echo "Installing Flatpak applications..."
@@ -72,6 +85,7 @@ flatpak install -y io.dbeaver.DBeaverCommunity
 flatpak install -y io.github.amit9838.mousam
 flatpak install -y io.missioncenter.MissionCenter
 flatpak install -y com.rafaelmardojai.Blanket
+flatpak install -y io.github.nokse22.inspector
 sh -c "$(curl -sS https://raw.githubusercontent.com/Vendicated/VencordInstaller/main/install.sh)"
 
 # Installing GNOME Extensions...
@@ -121,6 +135,8 @@ git config --global init.defaultBranch main
 
 echo "Installing Hyfetch..."
 sudo dnf install -y hyfetch
+
+echo ""
 
 # Installing ZSH...
 echo "Installing ZSH"
