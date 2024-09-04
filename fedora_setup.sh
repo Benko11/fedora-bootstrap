@@ -20,8 +20,8 @@ fi
 
 # Initial Clean-up
 echo "Performing initial cleanup..."
-sudo dnf autoremove -y firefox libreoffice-core-1:24.2.2.1-3.fc40.x86_64
-sudo dnf autoremove -y gnome-contacts gnome-weather gnome-clocks gnome-maps totem rhythmbox gnome-tour simple-scan snapshot yelp gnome-calendar mediawriter
+sudo dnf autoremove -y firefox libreoffice-core-1:24.2.2.1-3.fc40.x86_64 > /dev/zero
+sudo dnf autoremove -y gnome-contacts gnome-weather gnome-clocks gnome-maps > /dev/zerototem rhythmbox gnome-tour simple-scan snapshot yelp gnome-calendar mediawriter
 
 sudo rm -rf /usr/share/gnome-shell/extensions/apps-menu@gnome-shell-extensions.gcampax.github.com
 sudo rm -rf /usr/share/gnome-shell/extensions/background-logo@fedorahosted.org
@@ -30,43 +30,43 @@ sudo rm -rf /usr/share/gnome-shell/extensions/window-list@gnome-shell-extensions
 sudo rm -rf /usr/share/gnome-shell/extensions/launch-new-instance@gnome-shell-extensions.gcampax.github.com
 
 echo "Updating repository cache..."
-sudo dnf update -y
+sudo dnf update -y > /dev/zero
 
 echo "Installing GNOME utilities..."
-sudo dnf install -y gnome-themes-extra gnome-tweaks timeshift openssl
+sudo dnf install -y gnome-themes-extra gnome-tweaks timeshift openssl > /dev/zero
 
 echo "Installing applications..."
-sudo dnf install -y google-chrome-stable neovim xxd dosbox python3-pip nodejs npm gcc gdb qbittorrent
+sudo dnf install -y google-chrome-stable neovim xxd dosbox python3-pip nodejs npm gcc gdb qbittorrent > /dev/zero
 
 # VS Code
 sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
 echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
-dnf check-update
-sudo dnf install -y code
+dnf check-update -y > /dev/zero
+sudo dnf install -y code > /dev/zero
 
-sudo dnf install postgresql-server postgresql-contrib
-sudo systemctl enable postgresql
+sudo dnf install postgresql-server postgresql-contrib > /dev/zero
+sudo systemctl enable postgresql > /dev/zero
 sudo postgresql-setup --initdb --unit postgresql
-sudo dnf group install --with-optional virtualization -y
+sudo dnf group install --with-optional virtualization -y > /dev/zero
 sudo systemctl start libvirtd
 sudo systemctl enable libvirtd
 
 echo "Installing multimedia codecs and tools..."
-sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-sudo dnf install -y gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel
-sudo dnf install -y lame* --exclude=lame-devel
-sudo dnf group upgrade -y --with-optional Multimedia
-sudo dnf install -y vlc yt-dlp
+sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm > /dev/zero
+sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm > /dev/zero
+sudo dnf install -y gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel > /dev/zero
+sudo dnf install -y lame* --exclude=lame-devel > /dev/zero
+sudo dnf group upgrade -y --with-optional Multimedia > /dev/zero
+sudo dnf install -y yt-dlp > /dev/zero
 
 # Installing Docker...
 echo "Installing Docker..."
-sudo dnf remove -y docker docker-client docker-client-latest                  docker-common docker-latest docker-latest-logrotate docker-logrotate docker-selinux docker-engine-selinux docker-engine
+sudo dnf remove -y docker docker-client docker-client-latest                  docker-common docker-latest docker-latest-logrotate docker-logrotate docker-selinux docker-engine-selinux docker-engine > /dev/zero
 
-sudo dnf -y install dnf-plugins-core
-sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+sudo dnf -y install dnf-plugins-core > /dev/zero
+sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo > /dev/zero
 
-sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/zero
 sudo systemctl enable docker
 
 # Installing Flatpak applications
@@ -82,6 +82,9 @@ flatpak install -y io.github.amit9838.mousam
 flatpak install -y io.missioncenter.MissionCenter
 flatpak install -y com.rafaelmardojai.Blanket
 flatpak install -y io.github.nokse22.inspector
+flatpak install -y org.musescore.MuseScore
+flatpak install -y org.videolan.VLC
+flatpak install -y org.ghidra_sre.Ghidra
 sh -c "$(curl -sS https://raw.githubusercontent.com/Vendicated/VencordInstaller/main/install.sh)"
 
 # Installing GNOME Extensions...
@@ -120,7 +123,7 @@ gsettings set org.gnome.system.location enabled true
 gsettings set org.gnome.shell.extensions.autohide-battery.hide-on 98
 gsettings set org.gnome.shell.extensions.caffeine toggle-shortcut ['<Super>c']
 gsettings set org.gnome.shell.extensions.clipboard-indicator toggle-menu ['<Super>v']
-gsettings set org.gnome.shell.extensions.customize-clock-on-lockscreen remove-date true
+gsettings set org.gnome.shell.extensions.customize-clock-on-lockscreen remove-date truez
 gsettings set org.gnome.shell.extensions.customize-clock-on-lockscreen remove-time true
 gsettings set org.gnome.shell.extensions.customize-clock-on-lockscreen remove-hint true
 sudo plymouth-set-default-theme spinner -R
@@ -139,9 +142,12 @@ echo "Installing ZSH"
 sudo dnf install -y zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
+echo "Downloading wallpapers..."
+git clone https://github.com/benko11/wallpapers
+
 # Setting up ZSH...
 echo "Setting up ZSH..."
-# Define the aliases
+
 aliases=(
   'alias ni="npm install"'
   'alias nd="npm run dev"'
