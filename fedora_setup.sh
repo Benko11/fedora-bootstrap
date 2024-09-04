@@ -44,10 +44,6 @@ echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com
 dnf check-update
 sudo dnf install -y code
 
-# Zed
-curl -f https://zed.dev/install.sh | sh
-echo 'export PATH=$HOME/.local/bin:$PATH' >> ~/.zshrc
-
 sudo dnf install postgresql-server postgresql-contrib
 sudo systemctl enable postgresql
 sudo postgresql-setup --initdb --unit postgresql
