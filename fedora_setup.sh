@@ -21,7 +21,7 @@ fi
 # Initial Clean-up
 echo "Performing initial cleanup..."
 sudo dnf autoremove -y firefox libreoffice-core-1:24.2.2.1-3.fc40.x86_64 > /dev/zero
-sudo dnf autoremove -y gnome-contacts gnome-weather gnome-clocks gnome-maps > /dev/zerototem rhythmbox gnome-tour simple-scan snapshot yelp gnome-calendar mediawriter
+sudo dnf autoremove -y gnome-contacts gnome-weather gnome-clocks gnome-maps totem rhythmbox gnome-tour simple-scan snapshot yelp gnome-calendar mediawriter >  /dev/zero
 
 sudo rm -rf /usr/share/gnome-shell/extensions/apps-menu@gnome-shell-extensions.gcampax.github.com
 sudo rm -rf /usr/share/gnome-shell/extensions/background-logo@fedorahosted.org
