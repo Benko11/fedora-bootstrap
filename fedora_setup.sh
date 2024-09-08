@@ -44,8 +44,19 @@ echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com
 dnf check-update -y > /dev/zero
 sudo dnf install -y code > /dev/zero
 
+<<<<<<< HEAD
 sudo dnf install postgresql-server postgresql-contrib > /dev/zero
 sudo systemctl enable postgresql > /dev/zero
+=======
+# Microsoft Edge
+sudo dnf upgrade --refresh
+sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+sudo dnf config-manager --add-repo https://packages.microsoft.com/yumrepos/edge
+sudo dnf install microsoft-edge-stable
+
+sudo dnf install postgresql-server postgresql-contrib
+sudo systemctl enable postgresql
+>>>>>>> 2107492 (add Microsoft Edge)
 sudo postgresql-setup --initdb --unit postgresql
 sudo dnf group install --with-optional virtualization -y > /dev/zero
 sudo systemctl start libvirtd
