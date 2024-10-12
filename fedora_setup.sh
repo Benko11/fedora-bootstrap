@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CURRENT_DIR=$(pwd)
+# CURRENT_DIR=$(pwd)
 # Redirect to HOME if not inside
 if [ "$CURRENT_DIR" != "$HOME_DIR" ]; then
     echo "You are not in your home directory. Redirecting to $HOME_DIR..."
@@ -17,6 +17,12 @@ if ! grep -q "defaultyes=True" "$FILE"; then
 else
     echo "Line already exists in $FILE"
 fi
+
+# Write "box" to /etc/hostname
+echo "box" > /etc/hostname
+
+# Optionally, you can also apply the new hostname immediately
+hostnamectl set-hostname box
 
 # Initial Clean-up
 echo "Performing initial cleanup..."
@@ -36,7 +42,9 @@ echo "Installing GNOME utilities..."
 sudo dnf install -y gnome-themes-extra gnome-tweaks timeshift openssl > /dev/zero
 
 echo "Installing applications..."
-sudo dnf install -y google-chrome-stable neovim xxd dosbox python3-pip nodejs npm gcc gdb qbittorrent > /dev/zero
+sudo dnf install -y google-chrome-stable neovim xxd dosbox python3-pip nodejs npm gcc gdb adb valgrind qbittorrent calibre > /dev/zero
+sudo npm i -g @angular/cli > /dev/zero
+sudo npm i -g @nestjs/cli > /dev/zero
 
 # VS Code
 sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
@@ -44,19 +52,16 @@ echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com
 dnf check-update -y > /dev/zero
 sudo dnf install -y code > /dev/zero
 
-<<<<<<< HEAD
-sudo dnf install postgresql-server postgresql-contrib > /dev/zero
-sudo systemctl enable postgresql > /dev/zero
-=======
+
 # Microsoft Edge
 sudo dnf upgrade --refresh
 sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
 sudo dnf config-manager --add-repo https://packages.microsoft.com/yumrepos/edge
 sudo dnf install microsoft-edge-stable
 
-sudo dnf install postgresql-server postgresql-contrib
-sudo systemctl enable postgresql
->>>>>>> 2107492 (add Microsoft Edge)
+# PostgreSQL
+sudo dnf install postgresql-server postgresql-contrib > /dev/zero
+sudo systemctl enable postgresql > /dev/zero
 sudo postgresql-setup --initdb --unit postgresql
 sudo dnf group install --with-optional virtualization -y > /dev/zero
 sudo systemctl start libvirtd
@@ -80,7 +85,7 @@ sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/dock
 sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin > /dev/zero
 sudo systemctl enable docker
 
-# Installing Flatpak applications
+Installing Flatpak applications
 echo "Installing Flatpak applications..."
 flatpak install -y com.mattjakeman.ExtensionManager
 flatpak install -y com.discordapp.Discord
@@ -144,9 +149,7 @@ git config --global init.defaultBranch main
 
 
 echo "Installing Hyfetch..."
-sudo dnf install -y hyfetch
-
-echo ""
+sudo dnf install -y hyfetch > /dev/zero
 
 # Installing ZSH...
 echo "Installing ZSH"
@@ -167,6 +170,7 @@ aliases=(
   'alias nu="npm uninstall"'
   'alias nt="npm run test"'
   'alias nsd="npm run start:dev"'
+  'alias ngs="ng serve --host 0.0.0.0"'
 )
 
 # Add each alias to ~/.zshrc if it doesn't already exist
